@@ -25,7 +25,7 @@ Grading
 | Student Number | Student Name | Student Email |
 |-|-|-|
 |(STUDENT NUMBER HERE)| (STUDENT NAME HERE)| (STUDENT EMAIL HERE) |
-|(STUDENT NUMBER HERE)| (STUDENT NAME HERE)| (STUDENT EMAIL HERE) |
+|(843-23-4974)| (Yadiel A. Rivera Roche)| (yadiel.rivera16@upr.edu) |
 
 ---
 
