@@ -24,7 +24,7 @@ Grading
 ## Team Info
 | Student Number | Student Name | Student Email |
 |-|-|-|
-|(STUDENT NUMBER HERE)| (STUDENT NAME HERE)| (STUDENT EMAIL HERE) |
+|(802-23-1404)| (Augusto Gabriel Pérez Santos)| (augusto.perez2@upr.edu) |
 |(843-23-4974)| (Yadiel A. Rivera Roche)| (yadiel.rivera16@upr.edu) |
 
 ---
