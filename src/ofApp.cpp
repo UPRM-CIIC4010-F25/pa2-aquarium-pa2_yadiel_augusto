@@ -27,6 +27,7 @@ void ofApp::setup(){
 
     // Lets setup the aquarium
     myAquarium = std::make_shared<Aquarium>(ofGetWindowWidth(), ofGetWindowHeight(), spriteManager);
+    myAquarium->setPlayer(player);
     player = std::make_shared<PlayerCreature>(ofGetWindowWidth()/2 - 50, ofGetWindowHeight()/2 - 50, DEFAULT_SPEED, this->spriteManager->GetSprite(AquariumCreatureType::NPCreature));
     player->setDirection(0, 0); // Initially stationary
     player->setBounds(ofGetWindowWidth() - 20, ofGetWindowHeight() - 20);
@@ -82,6 +83,8 @@ void ofApp::update(){
 void ofApp::draw(){
     backgroundImage.draw(0, 0);
     gameManager->DrawActiveScene();
+    auto aquariumScene = std::static_pointer_cast<AquariumGameScene>(gameManager->GetScene(GameSceneKindToString(GameSceneKind::AQUARIUM_GAME)));
+    aquariumScene->GetAquarium()->draw(true);
 }
 
 //--------------------------------------------------------------

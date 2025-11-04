@@ -131,6 +131,30 @@ void BiggerFish::draw() const {
     this->m_sprite->draw(this->m_x, this->m_y);
 }
 
+// AquiariumCreature
+void AquariumCreature::draw(bool debug){
+    sprite.draw(position.x, position.y);
+    if(debug){
+        ofNoFill();
+        if (isColliding){
+            ofSetColor(ofColor::red);
+        } else {
+            ofSetColor(ofColor::green);
+            ofDrawRectangle(position.x, position.y, width, height);
+            ofSetColor(255);
+            ofFill();
+        }
+    }
+}
+
+void AquariumCreature::keepInBounds(Float maxWidth, float maxHeight){
+    if(position.x < 0 || position.x + width > maxWidth){
+        velocity.x *= -1;
+    }
+    if(position.y < 0 || position.y + height > maxHeight){
+        velocity.y *= -1;
+    }
+}
 
 // AquariumSpriteManager
 AquariumSpriteManager::AquariumSpriteManager(){
@@ -162,6 +186,9 @@ Aquarium::Aquarium(int width, int height, std::shared_ptr<AquariumSpriteManager>
 void Aquarium::addCreature(std::shared_ptr<Creature> creature) {
     creature->setBounds(m_width - 20, m_height - 20);
     m_creatures.push_back(creature);
+    bool isColliding = false;
+    void setColliding(bool c) {isColliding = c; }
+    bool getColliding() const {return isColliding;}
 }
 
 void Aquarium::addAquariumLevel(std::shared_ptr<AquariumLevel> level){
@@ -173,12 +200,28 @@ void Aquarium::update() {
     for (auto& creature : m_creatures) {
         creature->move();
     }
+
+    if (player) {
+        player->move();
+    }
+
+    if (player) {
+        for (auto& npc : m_creatures) {
+            if (checkCollision(*player, *npc)) {
+                handleCollision(*player, *npc);
+            }
+        }
+    }
+
     this->Repopulate();
 }
 
 void Aquarium::draw() const {
     for (const auto& creature : m_creatures) {
         creature->draw();
+    }
+    if (player) {
+        player->draw();
     }
 }
 
@@ -270,10 +313,26 @@ std::shared_ptr<GameEvent> DetectAquariumCollisions(std::shared_ptr<Aquarium> aq
         }
     }
     return nullptr;
+
 };
 
-//  Imlementation of the AquariumScene
+bool checkCollision(const AquariumCreature& a, const AquariumCreature &b) {
+    ofRectangle rectA(a.getPosition().x, a.getPosition().y, a.getWidth(), a.getHeight());
+    ofRectangle rectB(b.getPosition().x, b.getPosition().y, b.getWidth(), b.getHeight());
+    return rectA.intersects(rectB);
+}
 
+void handleCollision(AquariumCreature& a, AquariumCreature& b) {
+    a.setVelocity(-a.getVelocity());
+    b.setVelocity(-b.getVelocity());
+    a.setPosition(a.getPosition() + a.getVelocity() * 2.0f);
+    b.setPosition(b.getPosition() + b.getVelocity() * 2.0f);
+    a.SetColliding(true);
+    b.SetCollding(true);
+    ofLogVerbose() << "Collision between the player and NPC" << endl;
+}
+
+//  Implementation of the AquariumScene
 void AquariumGameScene::Update(){
     std::shared_ptr<GameEvent> event;
 
