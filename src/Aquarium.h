@@ -170,6 +170,20 @@ class AquariumGameScene : public GameScene {
         AwaitFrames updateControl{5};
 };
 
+class PowerUp {
+    public:
+    ofImage sprite;
+    ofVec2f position;
+    bool active = true;
+    PowerUp(float x, float y, const std::string& imagePath) {
+        sprite.load(imagePath);
+        position.set(x,y);
+    }
+    void draw() {if(active) sprite.draw(position);}
+    ofRectangle getBounds() const{
+        return ofRectangle(position.x, position.y, sprite.getWidth(), sprite.getHeight());
+    }
+};
 
 class Level_0 : public AquariumLevel  {
     public:
@@ -199,22 +213,4 @@ class Level_2 : public AquariumLevel  {
         };
         std::vector<AquariumCreatureType> Repopulate() override;
 
-};
-class Level_3 : public AquariumLevel{
-    public:
-    Level_3(int levelNumber, int targetScore): AquariumLevel(levelNumber, targetScore){
-            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::NPCreature, 25));
-            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::BiggerFish, 6));
-
-        };
-        std::vector<AquariumCreatureType> Repopulate() override;
-};
-class Level_4 : public AquariumLevel{
-    public:
-    Level_4(int levelNumber, int targetScore): AquariumLevel(levelNumber, targetScore){
-            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::NPCreature, 18));
-            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::BiggerFish, 15));
-
-        };
-        std::vector<AquariumCreatureType> Repopulate() override;
 };
