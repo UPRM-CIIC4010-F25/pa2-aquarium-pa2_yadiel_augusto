@@ -406,3 +406,53 @@ std::vector<AquariumCreatureType> Level_2::Repopulate() {
     }
     return toRepopulate;
 }
+void Aquarium::setupAudio(){
+    if(ofFile::doesFileExist("data/ambient_loop.mp3",true)){
+        ambient.load("ambient_loop.mp3");
+
+    } else if (ofFile::doesFileExist("ambient_loop.mp3",true)){
+        ambient.load("ambient_loop.mp3");
+}else {
+    ofLogError("Aquarium")<<"Audio file ambient_loop.mp3 not found!"<<endl;
+    audioLoaded = false;
+    return;
+}
+ambient.setLoop(true);
+ambient.setMultiPlay(false);
+ambient.setVolume(0.0f);
+ambient.play();
+audioLoaded = true;
+}
+void Aquarium::updateAudio(float dt){
+    if(!audioLoaded){return;}
+    float currentVolume = ambient.getVolume();
+    if(fabs(currentVolume - targetVolume)>0.001f){
+        float step = fadeSpeed * dt;
+        if(currentVolume < targetVolume){
+            currentVolume += step;
+            if(currentVolume > targetVolume){
+                currentVolume = targetVolume;
+            }
+        } else {
+            currentVolume -= step;
+            if(currentVolume < targetVolume){
+                currentVolume = targetVolume;
+            }
+        }
+        ambient.setVolume(currentVolume);
+    }
+    }
+    void Aquarium :: pauseAudio(){
+        if(!audioLoaded) return;
+        if(ambient.isPlaying()){
+            ambient.setPaused(true);
+        }
+    }
+    void Aquarium :: resumeAudio(){
+        if(!audioLoaded)return;
+        if(ambient.isLoaded()) ambient.setPaused(false);
+    }
+    void Aquarium :: stopAudio(){
+        if(!audioLoaded)return;
+        ambient.stop();
+    }
