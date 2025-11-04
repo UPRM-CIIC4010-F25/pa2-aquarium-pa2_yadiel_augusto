@@ -131,6 +131,14 @@ void BiggerFish::draw() const {
     this->m_sprite->draw(this->m_x, this->m_y);
 }
 
+ZigZagFish::ZigZagFish(float x, float y, float speed, ofImage sprite)
+
+void ZigZagFish::update(){
+    position.x += speed * direction.x;
+    position.y += sin(ofGetElapsedTimef() * 5) * 2;
+    bounceAtEdges();
+}
+
 // AquiariumCreature
 void AquariumCreature::draw(bool debug){
     sprite.draw(position.x, position.y);
@@ -152,7 +160,7 @@ void AquariumCreature::keepInBounds(Float maxWidth, float maxHeight){
         velocity.x *= -1;
     }
     if(position.y < 0 || position.y + height > maxHeight){
-        velocity.y *= -1;
+        velocity.y *= -1
     }
 }
 
@@ -174,6 +182,18 @@ std::shared_ptr<GameSprite> AquariumSpriteManager::GetSprite(AquariumCreatureTyp
     }
 }
 
+// PowerUp Implementation
+PowerUp::PowerUp(float x, float y, std::string spritePath) {
+    sprite.load(spritePath);
+    position.set(x, y);
+}
+
+void PowerUp::draw(){
+    if (active) sprite.draw(position.x, position.y);
+}
+ofRectangle PowerUp::getBounds() const {
+    return ofRectangle(position.x, position.y, sprite.getWidth(), sprite.getHeight());
+}
 
 // Aquarium Implementation
 Aquarium::Aquarium(int width, int height, std::shared_ptr<AquariumSpriteManager> spriteManager)
@@ -374,6 +394,8 @@ void AquariumGameScene::Update(){
 }
 
 void AquariumGameScene::Draw() {
+    for(std::shared_ptr<AquariumLevelPopulationNode> node: this->m_levelPopulation){
+        node->currentPopulation = 0;
     this->m_player->draw();
     this->m_aquarium->draw();
     this->paintAquariumHUD();
@@ -394,8 +416,8 @@ void AquariumGameScene::paintAquariumHUD(){
 }
 
 void AquariumLevel::populationReset(){
-    for(std::shared_ptr<AquariumLevelPopulationNode> node: this->m_levelPopulation){
-        node->currentPopulation = 0;
+    for(auto node: this->m_levelPopulation){
+        node->currentPopulation = 0; // need to reset the population to ensure they are made a new in the next level
     }
 }
 
@@ -418,21 +440,6 @@ void AquariumLevel::ConsumePopulation(AquariumCreatureType creatureType, int pow
 bool AquariumLevel::isCompleted(){
     return this->m_level_score >= this->m_targetScore;
 }
-std::vector<AquariumCreatureType> AquariumLevel::Repopulate() {
-    std::vector<AquariumCreatureType> toRepopulate;
-    for(std::shared_ptr<AquariumLevelPopulationNode> node : this->m_levelPopulation){
-        int delta = node->population - node->currentPopulation;
-        ofLogVerbose() << "to Repopulate :  " << delta << endl;
-        if(delta >0){
-            for(int i = 0; i<delta; i++){
-                toRepopulate.push_back(node->creatureType);
-            }
-            node->currentPopulation += delta;
-        }
-    }
-    return toRepopulate;
-}
-
 
 std::vector<AquariumCreatureType> Level_0::Repopulate() {
     std::vector<AquariumCreatureType> toRepopulate;
@@ -477,6 +484,7 @@ std::vector<AquariumCreatureType> Level_2::Repopulate() {
     }
     return toRepopulate;
 }
+
 std::vector<AquariumCreatureType> Level_3 :: Repopulate() {
     std::vector<AquariumCreatureType> toRepopulate;
     for(std::shared_ptr<AquariumLevelPopulationNode> node : this->m_levelPopulation){
