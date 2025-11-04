@@ -118,7 +118,11 @@ public:
     void setMaxPopulation(int n) { m_maxPopulation = n; }
     void Repopulate();
     void SpawnCreature(AquariumCreatureType type);
-    void setPlayer(std::shared_ptr<PlayerCreature> p) { player = p; }
+    void setupAudio();
+    void updateAudio(float dt);
+    void pauseAudio();
+    void resumeAudio();
+    void stopAudio();
     
     std::shared_ptr<Creature> getCreatureAt(int index);
     int getCreatureCount() const { return m_creatures.size(); }
@@ -131,6 +135,10 @@ private:
     int m_width;
     int m_height;
     int currentLevel = 0;
+    float targetVolume = 0.5f;
+    float fadeSpeed = 0.2f; 
+    bool audioLoaded = false;
+    ofSoundPlayer ambient;
     std::vector<std::shared_ptr<Creature>> m_creatures;
     std::vector<std::shared_ptr<Creature>> m_next_creatures;
     std::vector<std::shared_ptr<AquariumLevel>> m_aquariumlevels;
