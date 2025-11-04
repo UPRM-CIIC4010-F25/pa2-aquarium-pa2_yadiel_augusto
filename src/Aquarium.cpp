@@ -335,8 +335,8 @@ void AquariumGameScene::paintAquariumHUD(){
 }
 
 void AquariumLevel::populationReset(){
-    for(auto node: this->m_levelPopulation){
-        node->currentPopulation = 0; // need to reset the population to ensure they are made a new in the next level
+    for(std::shared_ptr<AquariumLevelPopulationNode> node: this->m_levelPopulation){
+        node->currentPopulation = 0;
     }
 }
 
@@ -359,8 +359,20 @@ void AquariumLevel::ConsumePopulation(AquariumCreatureType creatureType, int pow
 bool AquariumLevel::isCompleted(){
     return this->m_level_score >= this->m_targetScore;
 }
-
-
+std::vector<AquariumCreatureType> AquariumLevel::Repopulate() {
+    std::vector<AquariumCreatureType> toRepopulate;
+    for(std::shared_ptr<AquariumLevelPopulationNode> node : this->m_levelPopulation){
+        int delta = node->population - node->currentPopulation;
+        ofLogVerbose() << "to Repopulate :  " << delta << endl;
+        if(delta >0){
+            for(int i = 0; i<delta; i++){
+                toRepopulate.push_back(node->creatureType);
+            }
+            node->currentPopulation += delta;
+        }
+    }
+    return toRepopulate;
+}
 
 
 std::vector<AquariumCreatureType> Level_0::Repopulate() {
@@ -406,12 +418,37 @@ std::vector<AquariumCreatureType> Level_2::Repopulate() {
     }
     return toRepopulate;
 }
+std::vector<AquariumCreatureType> Level_3 :: Repopulate() {
+    std::vector<AquariumCreatureType> toRepopulate;
+    for(std::shared_ptr<AquariumLevelPopulationNode> node : this->m_levelPopulation){
+        int delta = node->population - node->currentPopulation;
+        if(delta >0){
+            for(int i=0; i<delta; i++){
+                toRepopulate.push_back(node->creatureType);
+            }
+            node->currentPopulation += delta;
+        }
+    }
+    return toRepopulate;
+}
+std::vector<AquariumCreatureType> Level_4 :: Repopulate() {
+    std::vector<AquariumCreatureType> toRepopulate;
+    for(std::shared_ptr<AquariumLevelPopulationNode> node : this->m_levelPopulation){
+        int delta = node->population - node->currentPopulation;
+        if(delta >0){
+            for(int i=0; i<delta; i++){
+                toRepopulate.push_back(node->creatureType);
+            }
+            node->currentPopulation += delta;
+        }
+    }
+    return toRepopulate;
+}
 void Aquarium::setupAudio(){
     if(ofFile::doesFileExist("data/ambient_loop.mp3",true)){
-        ambient.load("ambient_loop.mp3");
-
-    } else if (ofFile::doesFileExist("ambient_loop.mp3",true)){
-        ambient.load("ambient_loop.mp3");
+        ambient.load("data/ambient_loop.mp3");
+    } else if (ofFile::doesFileExist("data/ambient_loop.mp3",true)){
+        ambient.load("data/ambient_loop.mp3");
 }else {
     ofLogError("Aquarium")<<"Audio file ambient_loop.mp3 not found!"<<endl;
     audioLoaded = false;

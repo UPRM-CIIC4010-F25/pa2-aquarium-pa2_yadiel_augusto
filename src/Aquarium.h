@@ -199,3 +199,21 @@ class Level_2 : public AquariumLevel  {
         std::vector<AquariumCreatureType> Repopulate() override;
 
 };
+class Level_3 : public AquariumLevel{
+    public:
+    Level_3(int levelNumber, int targetScore): AquariumLevel(levelNumber, targetScore){
+            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::NPCreature, 25));
+            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::BiggerFish, 6));
+
+        };
+        std::vector<AquariumCreatureType> Repopulate() override;
+};
+class Level_4 : public AquariumLevel{
+    public:
+    Level_4(int levelNumber, int targetScore): AquariumLevel(levelNumber, targetScore){
+            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::NPCreature, 18));
+            this->m_levelPopulation.push_back(std::make_shared<AquariumLevelPopulationNode>(AquariumCreatureType::BiggerFish, 15));
+
+        };
+        std::vector<AquariumCreatureType> Repopulate() override;
+};
